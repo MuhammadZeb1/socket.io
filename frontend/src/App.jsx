@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { io } from "socket.io-client";
 
 function App() {
   const [message, setmessage] = useState("");
-  const socket = io("http://localhost:3000");
+  const [data, setdata] = useState("");
+  const socket = useMemo(()=>io("http://localhost:3000"),[]);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -13,7 +14,11 @@ function App() {
     socket.on("welcome", (m) => {
       console.log("📩", m);
     });
-
+    socket.on("data", (data) => {
+      console.log(data)
+      setdata(data)
+    });
+ 
     return () => {
       socket.disconnect();
     };
@@ -29,6 +34,7 @@ function App() {
 
   return (
     <>
+
       <form onSubmit={handle}>
         <input
           type="text"
@@ -38,6 +44,7 @@ function App() {
         />
         <button type="submit">Send</button>
       </form>
+      <div>{data}</div>
     </>
   );
 }

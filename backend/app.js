@@ -32,6 +32,7 @@ io.on("connection",(socket)=>{
      console.log("connect",socket.id)
      socket.on("message",(data)=>{
       console.log(data)
+      socket.broadcast.emit("data",data)
      })
 
      socket.broadcast.emit("welcome", `welcome back ${socket.id}`);
