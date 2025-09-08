@@ -31,7 +31,13 @@ app.get('/', (req, res) => {
 io.on("connection",(socket)=>{
      console.log("connect")
      console.log("id",socket.id)
+     socket.broadcast.emit("welcome", `welcome back ${socket.id}`);
+
 })
 // Start server
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`)})
+  
+
+    
+  
