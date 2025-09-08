@@ -29,10 +29,15 @@ app.get('/', (req, res) => {
 });
 
 io.on("connection",(socket)=>{
-     console.log("connect")
-     console.log("id",socket.id)
-     socket.broadcast.emit("welcome", `welcome back ${socket.id}`);
+     console.log("connect",socket.id)
+     socket.on("message",(data)=>{
+      console.log(data)
+     })
 
+     socket.broadcast.emit("welcome", `welcome back ${socket.id}`);
+      socket.on("disconnect",()=>{
+        console.log(`user disconnect ${socket.id}`)
+      })
 })
 // Start server
 server.listen(PORT, () => {

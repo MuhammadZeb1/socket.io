@@ -1,22 +1,45 @@
-import React, { useEffect } from 'react'
-import { io } from 'socket.io-client'
+import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+
 function App() {
+  const [message, setmessage] = useState("");
+  const socket = io("http://localhost:3000");
 
-  const socket = io("http://localhost:3000")
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("✅ Connected:", socket.id);
+    });
 
-  useEffect(()=>{
-    socket.on("connect",()=>{
-      console.log("hello :connect")
-    })
-  })
-  useEffect(()=>{
-    socket.on("welcome",(m)=>{
-      console.log(m)
-    })
-  })
+    socket.on("welcome", (m) => {
+      console.log("📩", m);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const handle = (e) => {
+    e.preventDefault(); // typo fixed
+    if (message.trim()) {
+      socket.emit("message", message);
+      setmessage(""); // reset input field
+    }
+  };
+
   return (
-    <div>App</div>
-  )
+    <>
+      <form onSubmit={handle}>
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setmessage(e.target.value)}
+          placeholder="Type a message..."
+        />
+        <button type="submit">Send</button>
+      </form>
+    </>
+  );
 }
 
-export default App
+export default App;
